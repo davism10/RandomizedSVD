@@ -23,23 +23,21 @@ def random_range_finder(A : NDArray, j : int) -> NDArray:
     return Q
 
 
-def random_subspace_iter(A : NDArray, j : int, q : int) -> NDArray:
-    ''' Given an mxn matrix A and integers j and q, this algorithm computes
-        an mxj orthonormal matrix Q whose range approximates the range of A.
+def random_subspace_iter(A : NDArray, Y : NDArray, q : int) -> NDArray:
+    ''' Given an mxn matrix A and an mxj matrix Y (product of AW for a Gaussian matrix W), and an integer q, 
+        this algorithm computes an mxj orthonormal matrix Q whose range approximates the range of A.
 
             Parameters:
-                A (ndarray) : mxn matrix
-                j (int) : specifies the desired number of columns in Q 
+                A (ndrray) : mxn matrix
+                Y (ndarray) : mxj matrix, product AW for a Gaussian matrix W
                 q (int) : specifies desired number of iterations to perform
 
             Returns:
                 Q (ndarray) : mxj matrix with range(Q) approximately equal to range(A)
     '''
-    m, n = A.shape          # Get dimensions of A
-    W = randn(n, j)         # Draw an nxj standard Gaussian matrix W
 
-    # Form Y0 = AW and compute its QR factorization Y0 = Q0*R0
-    Y_old = A @ W 
+    # Compute the QR factorization Y0 = Q0*R0
+    Y_old = Y.copy()
     Q_old, R_old = qr(Y_old)
 
     # iterate from 1 to q
