@@ -33,7 +33,7 @@ def randomized_svd(A, k, q = 0, range_method = 'qr'):
             Vt (ndarray) : kxn matrix of right singular vectors
     '''
     m,n = A.shape
-    Ω = np.random.randn(n,2*k)
+    Ω = np.random.randn(n,2*k) # is 2k the best choice?
     for _ in range(q):
         Y = A @ (A.T @ Y)
     Y = A @ Ω
