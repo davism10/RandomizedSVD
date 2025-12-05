@@ -34,7 +34,7 @@ def random_subspace_iter(A : NDArray, Y : NDArray, r : int) -> NDArray:
     return Q_new
 
 
-def randomized_svd(A, k, r = 2, q = 0, range_method = 'qr'):
+def randomized_svd(A, k, r = 2, q = 0, range_method = 'qr', proportion = None):
     '''Compute the approximate randomized SVD of matrix A using either
        the QR method or the randomized range finder method.
        
@@ -46,13 +46,18 @@ def randomized_svd(A, k, r = 2, q = 0, range_method = 'qr'):
             range_method (str) : method to compute the range ('qr' or 'subspace_iter')
                 qr : use the basic numpy randomized range finder
                 subspace_iter : use the randomized subspace iteration method (Algorithm 4.4.2)
+            proportion (float): the proportion of columns to keep in your projection
         Returns:
             U (ndarray) : mxk matrix of left singular vectors
             S (ndarray) : vector of singular values
             Vt (ndarray) : kxn matrix of right singular vectors
     '''
     m,n = A.shape
-    Ω = np.random.randn(n,2*k) # is 2k the best choice?
+    
+    if proportion == None:
+        Ω = np.random.randn(n,2*k) # is 2k the best choice?
+    else:
+        Ω = np.random.randn(n,proportion * n)
     for _ in range(q):
         Y = A @ (A.T @ Y)
     Y = A @ Ω
