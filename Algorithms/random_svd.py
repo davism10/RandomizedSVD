@@ -34,7 +34,7 @@ def random_subspace_iter(A : NDArray, Y : NDArray, r : int) -> NDArray:
     return Q_new
 
 
-def randomized_svd(A, k, r = 2, q = 0, range_method = 'qr', proportion = None):
+def randomized_svd(A, k, r = 2, q = 0, range_method = 'qr', proportion = None, oversamples = None):
     '''Compute the approximate randomized SVD of matrix A using either
        the QR method or the randomized range finder method.
        
@@ -46,7 +46,10 @@ def randomized_svd(A, k, r = 2, q = 0, range_method = 'qr', proportion = None):
             range_method (str) : method to compute the range ('qr' or 'subspace_iter')
                 qr : use the basic numpy randomized range finder
                 subspace_iter : use the randomized subspace iteration method (Algorithm 4.4.2)
-            proportion (float): the proportion of columns to keep in your projection
+            proportion (float) or oversamples (int): the proportion of columns to keep in your projection or the number of oversamples to add
+                pick one of these two parameters to set the size of the random projection matrix
+                if both are None, defaults to oversamples = k
+                if both are provided, proportion takes precedence
         Returns:
             U (ndarray) : mxk matrix of left singular vectors
             S (ndarray) : vector of singular values
@@ -54,10 +57,12 @@ def randomized_svd(A, k, r = 2, q = 0, range_method = 'qr', proportion = None):
     '''
     m,n = A.shape
     
-    if proportion == None:
-        Ω = np.random.randn(n,2*k) # is 2k the best choice?
-    else:
+    if proportion == None and oversamples == None:
+        Ω = np.random.randn(n, 2*k) 
+    elif proportion is not None:
         Ω = np.random.randn(n,int(proportion * n))
+    else:
+        Ω = np.random.randn(n, k + oversamples)
     for _ in range(q):
         Y = A @ (A.T @ Y)
     Y = A @ Ω
