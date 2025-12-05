@@ -10,7 +10,7 @@ def random_subspace_iter(A : NDArray, Y : NDArray, r : int) -> NDArray:
             Parameters:
                 A (ndrray) : mxn matrix
                 Y (ndarray) : mxj matrix, product AW for a Gaussian matrix W
-                q (int) : specifies desired number of iterations to perform
+                r (int) : specifies desired number of iterations to perform
 
             Returns:
                 Q (ndarray) : mxj matrix with range(Q) approximately equal to range(A)
@@ -20,7 +20,7 @@ def random_subspace_iter(A : NDArray, Y : NDArray, r : int) -> NDArray:
     Y_old = Y.copy()
     Q_old, R_old = qr(Y_old)
 
-    # iterate from 1 to q
+    # iterate from 1 to r
     for _ in range(1, r+1):
         Y_approx = A.conj() @ Q_old
         Q_approx, R_approx = qr(Y_approx)
@@ -34,7 +34,7 @@ def random_subspace_iter(A : NDArray, Y : NDArray, r : int) -> NDArray:
     return Q_new
 
 
-def randomized_svd(A, k, r, q = 0, range_method = 'qr'):
+def randomized_svd(A, k, r = 2, q = 0, range_method = 'qr'):
     '''Compute the approximate randomized SVD of matrix A using either
        the QR method or the randomized range finder method.
        
@@ -59,7 +59,7 @@ def randomized_svd(A, k, r, q = 0, range_method = 'qr'):
     if range_method == 'qr':
         Q,_ = np.linalg.qr(Y)
     elif range_method == 'subspace_iter':
-        Q = random_subspace_iter(A, 2*k, r)
+        Q = random_subspace_iter(A, Y, r)
     B = Q.T @ A
     U, S, Vt = np.linalg.svd(B, full_matrices = False)
     U = Q @ U
