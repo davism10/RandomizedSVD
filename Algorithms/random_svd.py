@@ -63,9 +63,9 @@ def randomized_svd(A, k, r = 2, q = 0, range_method = 'qr', proportion = None, o
         Ω = np.random.randn(n,int(proportion * n))
     else:
         Ω = np.random.randn(n, k + oversamples)
+    Y = A @ Ω
     for _ in range(q):
         Y = A @ (A.T @ Y)
-    Y = A @ Ω
     if range_method == 'qr':
         Q,_ = np.linalg.qr(Y)
     elif range_method == 'subspace_iter':
