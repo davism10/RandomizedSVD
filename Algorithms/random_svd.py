@@ -57,7 +57,7 @@ def randomized_svd(A, k, r = 2, q = 0, range_method = 'qr', proportion = None):
     if proportion == None:
         Ω = np.random.randn(n,2*k) # is 2k the best choice?
     else:
-        Ω = np.random.randn(n,proportion * n)
+        Ω = np.random.randn(n,int(proportion * n))
     for _ in range(q):
         Y = A @ (A.T @ Y)
     Y = A @ Ω
