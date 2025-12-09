@@ -22,7 +22,7 @@ def random_subspace_iter(A : NDArray, Y : NDArray, r : int) -> NDArray:
 
     # iterate from 1 to r
     for _ in range(1, r+1):
-        Y_approx = A.conj() @ Q_old
+        Y_approx = A.T @ Q_old
         Q_approx, R_approx = qr(Y_approx)
         Y_new = A @ Q_approx 
         Q_new, R_new = qr(Y_new)
