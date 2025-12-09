@@ -66,6 +66,7 @@ def randomized_svd(A, k, r = 2, q = 0, range_method = 'qr', proportion = None, o
     Y = A @ Ω
     for _ in range(q):
         Y = A @ (A.T @ Y)
+        Y, _ = np.linalg.qr(Y)         # I think we need to orthonormalize at each step of power iter for stability
     if range_method == 'qr':
         Q,_ = np.linalg.qr(Y)
     elif range_method == 'subspace_iter':
